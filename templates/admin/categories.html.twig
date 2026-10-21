@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title%}Categories{% endblock %}
+{% block body%}
+<!-- Principal Content Start -->
+   <div id="categories">
+   	  <div class="container">
+   	    <div class="col-xs-12 col-sm-8 col-sm-push-2">
+       	   <h1>Categories</h1>
+       	   <hr class='divider'>
+           {{ form_start(form, {'attr': {'class': 'form-horizontal'}})}}
+           <div class="form-group">
+            {{ form_row(form.name, {'attr': {'class': 'form-horizontal'}})}}
+            {{ form_row(form.Send, {'attr': {'class': 'pull-right btn btn-lg sr-button'}})}}
+           </div>
+           {{ form_end(form) }}
+       	   <hr class='divider'>
+           <div>
+             <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for category in categories %}
+                    <tr>
+                      <th scope="row">{{ category.id }}</th>
+                      <td>{{ category.name }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+             </table>
+           </div>
+       	</div>   
+   	  </div>
+   </div>
+<!-- Principal Content Start -->
+{% endblock %}
