@@ -9,13 +9,18 @@ use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Contact;
 use App\Form\ContactFormType;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Category;
+use App\Entity\Post;
+
 
 final class PageController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(): Response
+    public function index(ManagerRegistry $doctrine, Request $request): Response
     {
-        return $this->render('index.html.twig', []);
+        $repository = $doctrine->getRepository(Category::class);
+        $categories = $repository->findAll();
+        return $this->render('index.html.twig', ['categories' => $categories]);
     }
 
     #[Route('/about', name: 'about')]
@@ -25,9 +30,14 @@ final class PageController extends AbstractController
     }
 
     #[Route('/blog', name: 'blog')]
-    public function blog(): Response
+    public function blog(ManagerRegistry $doctrine): Response
     {
-        return $this->render('blog.html.twig', []);
+        $repository = $doctrine->getRepository(Post::class);
+        $posts = $repository->findAll();
+
+        return $this->render('blog.html.twig', [
+            'posts' => $posts,
+        ]);
     }
 
     #[Route('/contact', name: 'contact')]

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title%}New Post{% endblock %}
+{% block body%}
+<!-- Principal Content Start -->
+   <div id="new-post" style="padding-top: 70px;">
+      <div class="container">
+         <div class="col-xs-12 col-sm-8 col-sm-push-2">
+            <h1>New Post</h1>
+            {{ form_start(form, {'attr': {'class':'form-horizontal'}}) }}
+            <div class="form-group">
+                {{ form_row(form.title, {'attr': {'class':'form-control'}}) }}
+                {{ form_row(form.content, {'attr': {'class':'form-control'}}) }}
+                {{ form_row(form.image, {'attr': {'class':'form-horizontal'}}) }}
+                {{ form_row(form.Send, {'attr': {'class': 'pull-right btn btn-lg sr-button'}})}}
+            </div>
+            {{ form_end(form) }}
+            <hr class="divider">
+         </div>
+      </div>
+   </div>
+<!-- Principal Content Start -->
+{% endblock %}
