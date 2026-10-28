@@ -1,0 +1,15 @@
+{% if loop.index % 2 != 0 %}
+  <div class="comment">
+{% else %}
+  <div class="comment alt-comment">
+{% endif %}
+  <h4>{{ comment.name }}</h4>
+    <p class="time">  {{ comment.publishedAt | date('d') }} {{ comment.publishedAt | date('F') }}<br>
+      <i class="fa fa-clock-o sr-icons"></i>
+    {{ comment.publishedAt | date("H:i") }}
+    </p>
+  <hr />
+  <p>
+    {{ comment.text }}
+  </p>
+</div>

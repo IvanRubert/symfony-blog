@@ -2,13 +2,24 @@
 {% block body %}
 <div id="blog">
      <div class="container">
+      <header class="page-header-block">
+        <span class="eyebrow">Journal</span>
+        {% if searchTerm is defined and searchTerm %}
+            <h1>Results for “{{ searchTerm }}”</h1>
+        {% else %}
+            <h1>Blog</h1>
+        {% endif %}
+    </header>
+    <!-- falta completarlo con paginacion -->
+
       <div class="row">
 
       <!-- Blocks of Posts -->
-        {% for post in posts %}
-            {{ include ('partials/_post.html.twig', {'post': post}) }}
-        {% endfor %}
-
+        <div class="col-xs-12 col-sm-8 row">
+          {% for post in posts %}
+              {{ include ('partials/_post.html.twig', {'post': post}) }}
+          {% endfor %}
+        </div>
       <!-- End of Blog Post -->  
 
       <!-- Side bar -->  
@@ -41,32 +52,9 @@
            </div>
             <h3>Recent Posts</h3>
             <hr>
-             <div class="post">
-               <div class="post-heading">
-                 <span>10 APRIL</span>
-                 <img class="img-responsive" src="images/blog/wedding.jpg" alt="post's picture">
-               </div>
-               <div class="post-body">
-                 <span>
-                 <i class="fa fa-heart sr-icons"></i> 10
-                 <i class="fa fa-comments sr-icons"></i> 10
-                 </span>
-                 <h4 class="text-left"><a href="/single_post"><strong>Aliquam soluta</strong></a></h4>
-               </div>
-             </div>
-             <div class="post">
-               <div class="post-heading">
-                 <span>12 MAY</span>
-                 <img class="img-responsive" src="images/blog/woman.jpg" alt="post's picture">
-               </div>
-               <div class="post-body">
-                 <span>
-                 <i class="fa fa-heart sr-icons"></i> 10
-                 <i class="fa fa-comments sr-icons"></i> 10
-                 </span>
-                 <h4 class="text-left"><a href="/single_post"><strong>Consequuntur</strong></a></h4>
-               </div>
-             </div>
+             {% for recent in recents %}
+                {{ include ('partials/_recent_blogpost.html.twig', {'recent': recent}) }}
+            {% endfor %}
         </div>
       <!-- End of Side bar --> 
        

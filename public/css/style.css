@@ -766,12 +766,14 @@ img{
 	font-family: helvetica;
 }
 #blog .post-body h3 a,
-#blog .post-body h4 a{
+#blog .post-body h4 a,
+#blog .post-footer h4 a{
 	color: #373d54;
 	text-decoration: none;
 }
 #blog .post-body h3 a:hover,
-#blog .post-body h4 a:hover{
+#blog .post-body h4 a:hover,
+#blog .post-footer h4 a:hover{
 	color: #151b32;
 }
 

@@ -15,6 +15,8 @@ use App\Entity\Post;
 
 final class PageController extends AbstractController
 {
+    private const POSTS_PER_PAGE = 5;
+
     #[Route('/', name: 'index')]
     public function index(ManagerRegistry $doctrine, Request $request): Response
     {
@@ -30,13 +32,54 @@ final class PageController extends AbstractController
     }
 
     #[Route('/blog', name: 'blog')]
-    public function blog(ManagerRegistry $doctrine): Response
+    public function blog(ManagerRegistry $doctrine, int $page = 1): Response
     {
+        $page = max(1, $page);
+
         $repository = $doctrine->getRepository(Post::class);
         $posts = $repository->findAll();
+        $recents = $repository->findRecents();
+        
+        $total = count($posts);
+        $totalPages = max(1, (int) ceil($total / self::POSTS_PER_PAGE));
+
+        if ($page > $totalPages) {
+            return $this->redirectToRoute('blog', ['page' => $totalPages]);
+        }
 
         return $this->render('blog.html.twig', [
             'posts' => $posts,
+            'recents' => $recents,
+            'page' => $page,
+            'totalPages' => $totalPages,
+            'total' => $total,
+        ]);
+    }
+
+    #[Route('/blog/buscar/{page}', name: 'blog_buscar')]
+    public function buscar(ManagerRegistry $doctrine, Request $request, int $page = 1): Response
+    {
+        $page = max(1, $page);
+
+        $repository = $doctrine->getRepository(Post::class);
+        $searchTerm = $request->query->get('searchTerm', '');
+        $posts = $repository->findBuscadosPaginados($searchTerm, $page, self::POSTS_PER_PAGE);
+        $recents = $repository->findRecents();
+
+        $total = count($posts);
+        $totalPages = max(1, (int) ceil($total / self::POSTS_PER_PAGE));
+
+        if ($page > $totalPages) {
+            return $this->redirectToRoute('blog_buscar', ['page' => $totalPages, 'searchTerm' => $searchTerm]);
+        }
+
+        return $this->render('blog/blog.html.twig', [
+            'posts'      => $posts,
+            'recents'    => $recents,
+            'searchTerm' => $searchTerm,
+            'page'       => $page,
+            'totalPages' => $totalPages,
+            'total'      => $total,
         ]);
     }
 
