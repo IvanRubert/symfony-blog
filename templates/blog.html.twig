@@ -1,4 +1,6 @@
 {% extends 'base.html.twig' %}
+{% block title %}Blog{% endblock %}
+
 {% block body %}
 <div id="blog">
      <div class="container">
@@ -10,28 +12,59 @@
             <h1>Blog</h1>
         {% endif %}
     </header>
-    <!-- falta completarlo con paginacion -->
-
       <div class="row">
 
       <!-- Blocks of Posts -->
         <div class="col-xs-12 col-sm-8 row">
-          {% for post in posts %}
-              {{ include ('partials/_post.html.twig', {'post': post}) }}
-          {% endfor %}
+            <div id="post-list">
+                {% if total > 0 %}
+                    <div class="results-bar glass" role="status">
+                        <span class="results-count">
+                            <i class="fa fa-file-text-o"></i>
+                            Mostrando <strong>{{ posts.iterator|length }}</strong> de <strong>{{ total }}</strong> {{ total == 1 ? 'post' : 'posts' }}
+                        </span>
+                        <span class="results-page">Página {{ page }} <span class="results-sep">/</span> {{ totalPages }}</span>
+                        <span class="results-progress" aria-hidden="true">
+                            <span style="--value: {{ (page / totalPages * 100)|round }}%"></span>
+                        </span>
+                    </div>
+
+                    {% for post in posts %}
+                        {{ include('partials/_post.html.twig', {'post': post}) }}
+                    {% endfor %}
+
+                    {% if searchTerm is defined %}
+                        {{ include('partials/_paginador.html.twig', {
+                            'page': page,
+                            'totalPages': totalPages,
+                            'ruta': 'blog_buscar',
+                            'parametros': {'searchTerm': searchTerm}
+                        }) }}
+                    {% else %}
+                        {{ include('partials/_paginador.html.twig', {
+                            'page': page,
+                            'totalPages': totalPages,
+                            'ruta': 'blog'
+                        }) }}
+                    {% endif %}
+                {% else %}
+                    <div class="card empty-state">
+                        <i class="fa fa-search"></i>
+                        No posts found.
+                    </div>
+                {% endif %}
+            </div>
         </div>
       <!-- End of Blog Post -->  
 
       <!-- Side bar -->  
         <div class="col-xs-12 col-sm-4">
-           <form class="form-horizontal">
-             <div class="input-group">
-               <input class="form-control" type="text" placeholder="Research">
-               <span class="input-group-btn">
-                  <a href="" class="btn"><i class="fa fa-search"></i></a>
-               </span>
-             </div>
-           </form>
+           <form class="" action='{{ path('blog_buscar') }}'>
+              <input type="text" class="form-control" style="display:unset; width:85%" placeholder="Research" name='searchTerm'>
+              <button type='submit' class="btn btn-primary btn-danger"><i class="fa fa-search"></i>
+              </button>
+          </form>
+
            <div class="panel">
              <div class="panel-heading">
                <h4>Categories</h4>
@@ -46,15 +79,21 @@
                </ul>
              </div>
            </div>
-           <div class="well">
-             <h4>Soluta</h4>
-             <p>Quod soluta corrupti earum officia vel inventore vitae quidem, consequuntur odit impedit.</p>
-           </div>
-            <h3>Recent Posts</h3>
-            <hr>
-             {% for recent in recents %}
-                {{ include ('partials/_recent_blogpost.html.twig', {'recent': recent}) }}
-            {% endfor %}
+           <div class="card card-sm glass" data-reveal>
+                <h4>Soluta</h4>
+                <p class="text-muted" style="margin:0">Quod soluta corrupti earum officia vel inventore vitae quidem, consequuntur odit impedit.</p>
+            </div>
+
+            <div class="card card-sm" data-reveal>
+                <h4>Recent posts</h4>
+                {% if recents is defined and recents|length > 0 %}
+                    {% for recent in recents %}
+                        {{ include('partials/_recent_blogpost.html.twig', {recent: recent}) }}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted" style="margin:0">No recent posts yet.</p>
+                {% endif %}
+            </div>
         </div>
       <!-- End of Side bar --> 
        

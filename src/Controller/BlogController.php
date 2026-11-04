@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Post;
 use App\Form\PostFormType;
@@ -102,6 +103,23 @@ final class BlogController extends AbstractController
         return $this->render('blog/new_post.html.twig', array(
             'form' => $form->createView()    
         ));
+    }
+
+    #[Route('/single_post/{slug}/like', name: 'post_like')]
+    public function like(ManagerRegistry $doctrine, $slug): JsonResponse
+    {
+        $repository = $doctrine->getRepository(Post::class);
+        $post = $repository->findOneBy(["slug"=>$slug]);
+        if ($post){
+            $post->like();
+            $entityManager = $doctrine->getManager();    
+            $entityManager->persist($post);
+            $entityManager->flush();
+            $data = ['success' => true, 'likes' => $post->getNumLikes()];
+            return $this->json($data);
+        }
+        return $this->json(['success' => false, 'error' => 'Post not found'], Response::HTTP_NOT_FOUND);
+
     }
 
 }

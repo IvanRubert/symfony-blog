@@ -31,18 +31,20 @@ final class PageController extends AbstractController
         return $this->render('about.html.twig', []);
     }
 
-    #[Route('/blog', name: 'blog')]
+    #[Route('/blog/{page}', name: 'blog', requirements: ['page' => '\d+'])]
     public function blog(ManagerRegistry $doctrine, int $page = 1): Response
     {
         $page = max(1, $page);
 
         $repository = $doctrine->getRepository(Post::class);
-        $posts = $repository->findAll();
+        //Aquí obtenemos los datos con el método creado en el repositorio
+        $posts = $repository->findPaginados($page, self::POSTS_PER_PAGE);
         $recents = $repository->findRecents();
-        
+
         $total = count($posts);
         $totalPages = max(1, (int) ceil($total / self::POSTS_PER_PAGE));
 
+        // Si piden una página que no existe, redirigimos a la última
         if ($page > $totalPages) {
             return $this->redirectToRoute('blog', ['page' => $totalPages]);
         }
@@ -50,9 +52,9 @@ final class PageController extends AbstractController
         return $this->render('blog.html.twig', [
             'posts' => $posts,
             'recents' => $recents,
-            'page' => $page,
+            'page'       => $page,
             'totalPages' => $totalPages,
-            'total' => $total,
+            'total'        => $total,
         ]);
     }
 
@@ -69,11 +71,12 @@ final class PageController extends AbstractController
         $total = count($posts);
         $totalPages = max(1, (int) ceil($total / self::POSTS_PER_PAGE));
 
+        // Si piden una página que no existe, redirigimos a la última (conservando la búsqueda)
         if ($page > $totalPages) {
             return $this->redirectToRoute('blog_buscar', ['page' => $totalPages, 'searchTerm' => $searchTerm]);
         }
 
-        return $this->render('blog/blog.html.twig', [
+        return $this->render('blog.html.twig', [
             'posts'      => $posts,
             'recents'    => $recents,
             'searchTerm' => $searchTerm,

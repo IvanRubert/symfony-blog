@@ -52,7 +52,7 @@ class PostRepository extends ServiceEntityRepository
     public function findPaginados(int $page, int $perPage): Paginator
     {
         $query = $this->createQueryBuilder('p')
-            ->orderBy('p.PublishedAt', 'DESC')
+            ->orderBy('p.publishedAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage)
             ->getQuery();
@@ -67,15 +67,16 @@ class PostRepository extends ServiceEntityRepository
     public function findBuscadosPaginados(string $searchTerm, int $page, int $perPage): Paginator
     {
         $query = $this->createQueryBuilder('p')
-            ->andWhere('p.Content LIKE :val')
+            ->andWhere('p.content LIKE :val')
             ->setParameter('val', '%'.$searchTerm.'%')
-            ->orderBy('p.PublishedAt', 'DESC')
+            ->orderBy('p.publishedAt', 'DESC')
             ->setFirstResult(($page - 1) * $perPage)
             ->setMaxResults($perPage)
             ->getQuery();
 
         return new Paginator($query, false);
     }
+
 
     //    /**
     //     * @return Post[] Returns an array of Post objects
